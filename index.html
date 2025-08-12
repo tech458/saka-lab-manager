@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Lab TJKT 2 - Data Meja</title>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <style>
+    .meja {
+      border: 1px solid #333;
+      padding: 10px;
+      margin: 5px;
+      display: inline-block;
+      cursor: pointer;
+      border-radius: 8px;
+      min-width: 80px;
+      text-align: center;
+      user-select: none;
+    }
+    .perbaikan { background-color: #ffa726; }
+    .selesai { background-color: #8bc34a; }
+    .kosong { background-color: #eee; }
+  </style>
+</head>
+<body>
+
+<h1>Lab TJKT 2 - Data Meja</h1>
+<div id="container"></div>
+
+<script>
+  // Ganti ini dengan config kamu sendiri dari Firebase
+  const firebaseConfig = {
+    apiKey: "API_KEY_KAMU",
+    authDomain:  "AIzaSyCQeOzvRmrrIlCH9VB9QTJ3MePlicQLATo",
+    databaseURL: "dtbse-komsaka.firebaseapp.com",
+    projectId: "dtbse-komsaka",
+    storageBucket: "dtbse-komsaka.firebasestorage.app",
+    messagingSenderId: "221296225174",
+    appId: "1:221296225174:web:191cc70ddf24a0ac5d8bb7"
+  };
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  const container = document.getElementById('container');
+
+  // Status yang bisa dipilih
+  const statusList = ['kosong', 'selesai', 'perbaikan'];
+
+  // Fungsi buat elemen meja
+  function buatMeja(nomor, status = 'kosong') {
+    const div = document.createElement('div');
+    div.classList.add('meja');
+    div.classList.add(status);
+    div.textContent = `Meja ${nomor}`;
+    div.dataset.nomor = nomor;
+    div.dataset.status = status;
+
+    // Klik meja untuk ganti status
+    div.addEventListener('click', () => {
+      let idx = statusList.indexOf(div.dataset.status);
+      idx = (idx + 1) % statusList.length;
+      div.dataset.status = statusList[idx];
+      updateMeja(div.dataset.nomor, statusList[idx]);
+      updateUI();
+    });
+
+    return div;
+  }
+
+  // Update data meja ke Firebase
+  function updateMeja(nomor, status) {
+    db.ref('meja/' + nomor).set(status);
+  }
+
+  // Tampilkan semua meja berdasarkan data Firebase
+  function updateUI(data = {}) {
+    container.innerHTML = '';
+    // Contoh 30 meja
+    for(let i=1; i<=30; i++) {
+      const status = data[i] || 'kosong';
+      const meja = buatMeja(i, status);
+      container.appendChild(meja);
+    }
+  }
+
+  // Dengar data realtime dari Firebase
+  db.ref('meja').on('value', (snapshot) => {
+    const data = snapshot.val() || {};
+    updateUI(data);
+  });
+</script>
+
+</body>
+</html>
