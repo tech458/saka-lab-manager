@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Formulir</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f7fa;
+      margin: 0;
+      padding: 30px 12px;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+    h1 {
+      margin-bottom: 16px;
+      color: #2d89ef;
+      font-size: 1.5rem;
+      text-align: center;
+    }
+    form {
+      background: white;
+      padding: 16px 20px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(45,137,239,0.15);
+      max-width: 360px;
+      width: 100%;
+      margin-bottom: 16px;
+    }
+    label {
+      display: block;
+      font-weight: 600;
+      margin-top: 10px;
+      color: #444;
+      font-size: 0.9rem;
+    }
+    input[type="text"],
+    input[type="date"],
+    textarea {
+      width: 100%;
+      padding: 8px 10px;
+      margin-top: 4px;
+      border: 1.5px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: border-color 0.3s ease;
+      resize: vertical;
+      box-sizing: border-box;
+      min-height: 32px;
+    }
+    textarea {
+      min-height: 60px;
+    }
+    input[type="text"]:focus,
+    input[type="date"]:focus,
+    textarea:focus {
+      border-color: #2d89ef;
+      outline: none;
+    }
+    button[type="submit"] {
+      margin-top: 18px;
+      background: linear-gradient(45deg, #2d89ef, #005bb5);
+      border: none;
+      padding: 10px 0;
+      color: white;
+      font-weight: 700;
+      font-size: 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      width: 100%;
+      box-shadow: 0 4px 10px rgba(45,137,239,0.6);
+      transition: background 0.3s ease;
+      min-height: 38px;
+    }
+    button[type="submit"]:hover {
+      background: linear-gradient(45deg, #005bb5, #2d89ef);
+    }
+    .daftar-formulir {
+      max-width: 360px;
+      width: 100%;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(45,137,239,0.1);
+      padding: 14px 20px;
+      color: #2d89ef;
+      overflow-x: auto;
+    }
+    .daftar-formulir h2 {
+      margin-bottom: 10px;
+      font-weight: 700;
+      text-align: center;
+      font-size: 1.2rem;
+    }
+    #filterInput {
+      width: 100%;
+      max-width: 280px;
+      padding: 6px 10px;
+      margin: 0 auto 12px auto;
+      border: 1.5px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+      display: block;
+      box-sizing: border-box;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      color: #333;
+      min-width: 600px;
+    }
+    th, td {
+      padding: 8px 6px;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+      vertical-align: middle;
+    }
+    th {
+      background-color: #e1eaff;
+      font-weight: 600;
+    }
+    tr:hover {
+      background-color: #f0f5ff;
+    }
+    select.status-select {
+      padding: 4px 8px;
+      font-size: 12px;
+      border-radius: 6px;
+      border: 1.5px solid #ccc;
+      cursor: pointer;
+      transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+      font-weight: 700;
+      color: white;
+      min-width: 70px;
+    }
+    select.status-done {
+      background-color: #8bc34a;
+      border-color: #7cb342;
+    }
+    select.status-continue {
+      background-color: #ffa726;
+      border-color: #fb8c00;
+    }
+    select.status-fail {
+      background-color: #e53935;
+      border-color: #d32f2f;
+    }
+    button.hapus-btn {
+      background-color: #e53935;
+      border: none;
+      color: white;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      position: relative;
+      font-size: 12px;
+    }
+    button.hapus-btn:hover {
+      background-color: #b71c1c;
+    }
+    button.hapus-btn::after {
+      content: attr(title);
+      position: absolute;
+      bottom: 125%;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #333;
+      color: #fff;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    button.hapus-btn:hover::after {
+      opacity: 1;
+    }
+    #toast {
+      visibility: hidden;
+      min-width: 280px;
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      border-radius: 8px;
+      padding: 14px 24px;
+      position: fixed;
+      z-index: 1000;
+      left: 50%;
+      bottom: 40px;
+      transform: translateX(-50%);
+      font-size: 16px;
+      opacity: 0;
+      transition: opacity 0.5s, visibility 0.5s;
+    }
+    #toast.show {
+      visibility: visible;
+      opacity: 1;
+    }
+    @media (max-width: 400px) {
+      table {
+        min-width: 500px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Form Device Masuk Teknisi</h1>
+
+  <form id="formBarang">
+    <label for="idBarang">ID Barang</label>
+    <input type="text" id="idBarang" name="idBarang" required />
+
+    <label for="asalBarang">Asal Barang</label>
+    <input type="text" id="asalBarang" name="asalBarang" required />
+
+    <label for="penyetor">Penyetor</label>
+    <input type="text" id="penyetor" name="penyetor" required />
+
+    <label for="penerima">Penerima</label>
+    <input type="text" id="penerima" name="penerima" required />
+
+    <label for="tanggalMasuk">Tanggal Masuk</label>
+    <input type="date" id="tanggalMasuk" name="tanggalMasuk" required />
+
+    <label for="permasalahan">Permasalahan</label>
+    <textarea id="permasalahan" name="permasalahan" required></textarea>
+
+    <button type="submit">Simpan Formulir</button>
+  </form>
+
+  <section class="daftar-formulir">
+    <h2>Daftar Device</h2>
+    <input type="text" id="filterInput" placeholder="Cari ID, Penyetor, atau Penerima..." aria-label="Cari formulir" />
+    <table id="tabelFormulir" aria-label="Daftar Formulir Teknisi">
+      <thead>
+        <tr>
+          <th>ID Barang</th>
+          <th>Asal Barang</th>
+          <th>Penyetor</th>
+          <th>Penerima</th>
+          <th>Tanggal Masuk</th>
+          <th>Permasalahan</th>
+          <th>Status Barang</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Baris formulir akan muncul di sini -->
+      </tbody>
+    </table>
+  </section>
+
+  <div id="toast"></div>
+
+  <script>
+    const form = document.getElementById('formBarang');
+    const tbody = document.querySelector('#tabelFormulir tbody');
+    const filterInput = document.getElementById('filterInput');
+    const toast = document.getElementById('toast');
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2500);
+    }
+
+    function updateStatusStyle(select) {
+      select.classList.remove('status-done', 'status-continue', 'status-fail');
+      switch(select.value) {
+        case 'DONE': select.classList.add('status-done'); break;
+        case 'CONTINUE': select.classList.add('status-continue'); break;
+        case 'FAIL': select.classList.add('status-fail'); break;
+      }
+    }
+
+    function renderTable(data) {
+      tbody.innerHTML = '';
+      data.forEach((item, index) => {
+        const row = document.createElement('tr');
+        row.classList.remove('status-done', 'status-continue', 'status-fail');
+        if(item.statusBarang) {
+          row.classList.add('status-' + item.statusBarang.toLowerCase());
+        }
+
+        const statusSelect = document.createElement('select');
+        statusSelect.className = 'status-select';
+        ['DONE', 'CONTINUE', 'FAIL'].forEach(status => {
+          const option = document.createElement('option');
+          option.value = status;
+          option.textContent = status;
+          if(item.statusBarang === status) option.selected = true;
+          statusSelect.appendChild(option);
+        });
+        updateStatusStyle(statusSelect);
+        statusSelect.addEventListener('change', e => {
+          data[index].statusBarang = e.target.value;
+          localStorage.setItem('formulirTeknisi', JSON.stringify(data));
+          updateStatusStyle(e.target);
+          row.classList.remove('status-done', 'status-continue', 'status-fail');
+          row.classList.add('status-' + e.target.value.toLowerCase());
+          showToast(`Status barang ID "${item.idBarang}" diubah ke ${e.target.value}`);
+        });
+
+        const hapusBtn = document.createElement('button');
+        hapusBtn.textContent = 'Hapus';
+        hapusBtn.className = 'hapus-btn';
+        hapusBtn.title = 'Hapus data formulir ini';
+        hapusBtn.addEventListener('click', () => {
+          if(confirm(`Hapus data ID Barang "${item.idBarang}"?`)) {
+            data.splice(index, 1);
+            localStorage.setItem('formulirTeknisi', JSON.stringify(data));
+            tampilkanFormulir();
+            showToast(`Data ID Barang "${item.idBarang}" berhasil dihapus`);
+          }
+        });
+
+        row.innerHTML = `
+          <td>${item.idBarang}</td>
+          <td>${item.asalBarang}</td>
+          <td>${item.penyetor}</td>
+          <td>${item.penerima}</td>
+          <td>${item.tanggalMasuk}</td>
+          <td>${item.permasalahan}</td>
+          <td></td>
+          <td></td>
+        `;
+        row.querySelector('td:nth-child(7)').appendChild(statusSelect);
+        row.querySelector('td:nth-child(8)').appendChild(hapusBtn);
+
+        tbody.appendChild(row);
+      });
+    }
+
+    function tampilkanFormulir() {
+      const data = JSON.parse(localStorage.getItem('formulirTeknisi') || '[]');
+      renderTable(data);
+    }
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+
+      const dataForm = {
+        idBarang: form.idBarang.value.trim(),
+        asalBarang: form.asalBarang.value.trim(),
+        penyetor: form.penyetor.value.trim(),
+        penerima: form.penerima.value.trim(),
+        tanggalMasuk: form.tanggalMasuk.value,
+        permasalahan: form.permasalahan.value.trim(),
+        statusBarang: 'CONTINUE'
+      };
+
+      const dataLama = JSON.parse(localStorage.getItem('formulirTeknisi') || '[]');
+      dataLama.push(dataForm);
+      localStorage.setItem('formulirTeknisi', JSON.stringify(dataLama));
+
+      tampilkanFormulir();
+
+      form.reset();
+      form.idBarang.focus();
+
+      showToast('Formulir berhasil disimpan');
+    });
+
+    filterInput.addEventListener('input', () => {
+      const keyword = filterInput.value.toLowerCase();
+      const data = JSON.parse(localStorage.getItem('formulirTeknisi') || '[]');
+      const filtered = data.filter(item => 
+        item.idBarang.toLowerCase().includes(keyword) ||
+        item.penyetor.toLowerCase().includes(keyword) ||
+        item.penerima.toLowerCase().includes(keyword)
+      );
+      renderTable(filtered);
+    });
+
+    window.addEventListener('DOMContentLoaded', tampilkanFormulir);
+  </script>
+
+</body>
+</html>
